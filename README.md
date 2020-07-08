@@ -1,5 +1,7 @@
 # Computational & Deep Learning Frameworks Benchmark on real-world tasks
 
+### Use *benchmark.ipynb* to run the benchmark.
+
 Frameworks compared:
 * [Python 3](https://www.python.org/)/[Numpy](http://www.numpy.org/) with or without [Numba JIT compilation](http://numba.pydata.org/)
 * [Julia](https://julialang.org/) The Julia Programming Language
@@ -12,6 +14,10 @@ Frameworks compared:
 * [R](https://www.r-project.org/) Project for Statistical Computing
 
 # Tasks:
+*See benchmark.ipynb notebook for details.*
+
+*Benchmark output on hexacore CPU / Kepler GPU*
+
 ## Task I: Time-series model (GARCH / *Scan* operation  benchmark)
 ![Task I](img/task1.png)
 

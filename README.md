@@ -6,7 +6,7 @@ Frameworks compared:
 * [Python 3](https://www.python.org/)/[Numpy](http://www.numpy.org/) with or without [Numba JIT compilation](http://numba.pydata.org/)
 * [Julia](https://julialang.org/) The Julia Programming Language
 * C++ called from Python using [pybind11](https://github.com/pybind/pybind11)
-* [Tensorflow](https://www.tensorflow.org) v1 in CPU/GPU mode
+* [Tensorflow](https://www.tensorflow.org) v1 and v2 in CPU/GPU mode
 * [Theano](http://deeplearning.net/software/theano)
 * [MinPy](https://github.com/dmlc/minpy) a NumPy interface above [MXNet](http://mxnet.io) backend, in CPU/GPU mode
 * [Gluon](https://gluon.mxnet.io/) library in Apache [MXNet](http://mxnet.io), CPU/GPU mode

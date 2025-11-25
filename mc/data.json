@@ -1,1 +1,1 @@
-{"strike": 100.0, "barrier": 80.0, "tau": 1.0, "val": 13.7708, "tol": 0.5, "vol": 0.07840000000000001, "dy": 0.0, "rate": 0.0025, "price": 105.0, "n_rep": 100000, "time_steps": 1000}
+{"strike": 100.0, "barrier": 80.0, "tau": 1.0, "val": 13.77078, "tol": 0.5, "vol": 0.28, "dy": 0.0, "rate": 0.0025, "price": 105.0, "n_rep": 100000, "time_steps": 1000}

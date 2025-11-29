@@ -1,4 +1,4 @@
-"""MC Barrier Option pricing benchmark, Python/TensorFlow v1 version."""
+"""MC Barrier Option pricing benchmark, Python/TensorFlow v1 (compat.v1) version."""
 
 from util import benchmark, barrier_data
 import argparse
@@ -13,18 +13,17 @@ parser.add_argument('-mode', metavar='mode', default='cpu',
 args = parser.parse_args()
 out = {}
 
-def paths(S, tau, r, q, v, M, N):
+def paths(S, tau, r, q, v, m, n):
     """Generate GBM price paths"""
-    dt = tau/M
-    g1 = (r-q-v/2)*dt
-    g2 = tf.sqrt(v*dt)
-    return tf.exp(tf.log(S) + tf.cumsum(g1 + g2*tf.random_normal((M, N))))
+    dt = tau/m
+    drift = (r - q - v*v/2)*dt
+    scale = v*tf.sqrt(dt)
+    return tf.log(S) + tf.cumsum(tf.random_normal((m, n), mean=drift, stddev=scale))
 
-def barrier(S0, K, B, tau, r, q, v, M, N):
+def barrier(s0, k, b, tau, r, q, v, m, n):
     """Price a barrier option"""
-    S = paths(S0, tau, r, q, v, M, N)
-    l = tf.to_float(tf.greater(tf.reduce_min(S, 0), B))
-    payoffs = l * tf.maximum(S[-1, :]-K, 0)
+    s = paths(s0, tau, r, q, v, m, n)
+    payoffs = tf.where(tf.reduce_min(s, 0) <= tf.log(b), tf.zeros(n), tf.nn.relu(tf.exp(s[-1]) - k))
     return tf.exp(-r*tau)*tf.reduce_mean(payoffs)
 
 config = tf.ConfigProto()

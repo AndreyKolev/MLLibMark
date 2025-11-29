@@ -24,13 +24,13 @@ def paths(s:float, tau:float, r:float, q:float, v:float, m:int, n:int) -> tf.Ten
     dt = tau/m
     drift = (r - q - v*v/2)*dt
     scale = v*tf.sqrt(dt)
-    return tf.math.log(s) + tf.cumsum(drift + scale*tf.random.normal((m, n)))
+    return tf.math.log(s) + tf.cumsum(tf.random.normal((m, n), mean=drift, stddev=scale))
 
 @tf.function
 def barrier(s0:float, k:float, b:float, tau:float, r:float, q:float, v:float, m:int, n:int) -> float:
     """Price a barrier option"""
     s = paths(s0, tau, r, q, v, m, n)
-    payoffs = tf.where(tf.reduce_min(s, 0) <= math.log(b), .0, tf.nn.relu(tf.exp(s[-1, :]) - k))
+    payoffs = tf.where(tf.reduce_min(s, 0) <= math.log(b), .0, tf.nn.relu(tf.exp(s[-1]) - k))    
     return math.exp(-r*tau)*tf.reduce_mean(payoffs)
 
 data = barrier_data()

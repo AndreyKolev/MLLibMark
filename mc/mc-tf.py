@@ -4,39 +4,42 @@ import tensorflow as tf
 from util import benchmark, barrier_data
 import argparse
 import json
+import sys
+import math
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-mode', metavar='mode', default='cpu',
                     choices=['cpu', 'gpu'], help='use cpu/gpu')
 args = parser.parse_args()
 if args.mode == 'cpu':
-    tf.config.set_visible_devices([], 'GPU')  # Use CPU
-
+    tf.config.set_visible_devices([], 'GPU')
+elif args.mode == 'gpu':
+	gpus = tf.config.list_physical_devices('GPU')
+	if not gpus:
+		sys.exit("GPU is not available in this system!")
 out = {}
 
-def paths(S, tau, r, q, v, M, N):
+def paths(s:float, tau:float, r:float, q:float, v:float, m:int, n:int) -> tf.Tensor:
     """Generate GBM price paths"""
-    dt = tau/M
-    g1 = (r-q-v/2)*dt
-    g2 = tf.sqrt(v*dt)
-    return tf.exp(tf.math.log(S) + tf.cumsum(g1+g2*tf.random.normal((M, N))))
+    dt = tau/m
+    drift = (r - q - v*v/2)*dt
+    scale = v*tf.sqrt(dt)
+    return tf.math.log(s) + tf.cumsum(drift + scale*tf.random.normal((m, n)))
 
 @tf.function
-def barrier(S0, K, B, tau, r, q, v, M, N):
+def barrier(s0:float, k:float, b:float, tau:float, r:float, q:float, v:float, m:int, n:int) -> float:
     """Price a barrier option"""
-    S = paths(S0, tau, r, q, v, M, N)
-    l = tf.cast(tf.greater(tf.reduce_min(S, 0), B), dtype=tf.float32)
-    payoffs = l*tf.maximum(S[-1, :]-K, 0)
-    return tf.exp(-r*tau)*tf.reduce_mean(payoffs)
+    s = paths(s0, tau, r, q, v, m, n)
+    payoffs = tf.where(tf.reduce_min(s, 0) <= math.log(b), .0, tf.nn.relu(tf.exp(s[-1, :]) - k))
+    return math.exp(-r*tau)*tf.reduce_mean(payoffs)
 
 data = barrier_data()
-
 def barrier_fun():
     return barrier(data['price'], data['strike'],
         data['barrier'], data['tau'], data['rate'], data['dy'],
         data['vol'], data['time_steps'], data['n_rep'])
 
 t = benchmark(barrier_fun, data['val'], tol=data['tol'])
-out['tensorflow-'+args.mode] = t
+out['tensorflow-' + args.mode] = t
 
 print(json.dumps(out))

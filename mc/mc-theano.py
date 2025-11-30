@@ -13,27 +13,61 @@ out = {}
 
 device = 'cuda' if args.mode == 'gpu' else 'cpu'
 os.environ["THEANO_FLAGS"] = f'mode=FAST_RUN, device={device}, floatX=float32'
-
 import theano.tensor as T
 from theano.tensor.shared_randomstreams import RandomStreams
 from theano import function
 srng = RandomStreams(seed=0)
 
 
-def paths(S, tau, r, q, v, M, N):
-    """Generate GBM price paths"""
-    dt = tau/M
-    g1 = (r-q-v/2)*dt
-    g2 = T.sqrt(v*dt)
-    return T.exp(T.log(S) + T.cumsum(g1 + g2*srng.normal((M, N)), 0))
+def paths(s0, tau, r, q, v, m, n):
+    """
+    Builds symbolic graph for simulation of log-price paths of a stock under geometric Brownian motion.
+
+    Args:
+        s0: Initial stock price.
+        tau: Time to maturity.
+        r: Risk-free interest rate.
+        q: Dividend yield.
+        v: Volatility.
+        m: Number of time steps.
+        n: Number of simulation paths.
+
+    Returns:
+        theano.tensor.TensorVariable: Log-price paths of shape (m, n), where each column is a path.
+    """
+    dt = tau/m  # Time step
+    drift = (r - q - v*v/2)*dt  # Drift term
+    scale = v*T.sqrt(dt)  # Volatility scaling for Brownian motion
+    return T.log(s0) + T.cumsum(srng.normal(avg=drift, std=scale, size=(m, n)), axis=0)
 
 
-def barrier(S0, K, B, tau, r, q, v, M, N):
-    """Price a barrier option"""
-    S = paths(S0, tau, r, q, v, M, N)
-    l = T.cast(T.min(S, 0) > B, T.config.floatX)
-    payoffs = l * T.maximum(S[-1, :] - K, 0)
-    return T.exp(-r * tau) * T.mean(payoffs)
+def barrier(s0, k, b, tau, r, q, v, m, n):
+    """
+    Builds symbolic graph for estimation of the price of a down-and-out barrier option using Monte Carlo simulation.
+
+    Args:
+        s0: Initial stock price.
+        k: Strike price.
+        b: Barrier level.
+        tau: Time to maturity (in years).
+        r: Risk-free interest rate.
+        q: Dividend yield.
+        v: Volatility.
+        m: Number of time steps.
+        n: Number of simulation paths.
+
+    Returns:
+        theano.tensor.TensorVariable: Estimated option price
+    """
+    s = paths(s0, tau, r, q, v, m, n)
+    breakpoint()
+    #l = T.cast(T.min(s, axis=0) > T.log(b), T.config.floatX)
+    l = T.cast(T.any(s > T.log(b), axis=0), T.config.floatX)
+    
+    # Payoff: max(S_final - K, 0) only if barrier not hit
+    payoffs = l*T.maximum(T.exp(s[-1]) - k, 0)
+    # Discounted expected payoff
+    return T.exp(-r*tau)*T.mean(payoffs)
 
 data = barrier_data()
 barrier_t = barrier(data['price'], data['strike'],

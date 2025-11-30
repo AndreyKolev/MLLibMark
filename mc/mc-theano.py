@@ -60,7 +60,6 @@ def barrier(s0, k, b, tau, r, q, v, m, n):
         theano.tensor.TensorVariable: Estimated option price
     """
     s = paths(s0, tau, r, q, v, m, n)
-    breakpoint()
     #l = T.cast(T.min(s, axis=0) > T.log(b), T.config.floatX)
     l = T.cast(T.any(s > T.log(b), axis=0), T.config.floatX)
     

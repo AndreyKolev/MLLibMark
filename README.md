@@ -11,11 +11,11 @@ Frameworks compared:
 * [PyTorch](https://pytorch.org/)
 * [Tensorflow](https://www.tensorflow.org) v1 and v2 in CPU/GPU mode
 * [JAX](https://docs.jax.dev/en/latest/)
-* [Theano](http://deeplearning.net/software/theano)  ℹ️_Theano was deprecated and is being continued as [PyTensor](https://github.com/pymc-devs/pytensor)_
+* [Theano](http://deeplearning.net/software/theano)
 * [PyTensor](https://github.com/pymc-devs/pytensor)
-* [Apache MXNet/NDArray](https://mxnet.apache.org) NDArray library in Apache MXNet. ℹ️_MxNet moved to the Apache Attic_
-* [MinPy](https://github.com/dmlc/minpy) a NumPy interface above [Apache MXNet](https://mxnet.apache.org) backend. ℹ️MxNet moved to the Apache Attic
-* [Gluon](https://gluon.mxnet.io/) library in Apache [MXNet](http://mxnet.io), CPU/GPU mode. ℹ️_MxNet moved to the Apache Attic_
+* [Apache MXNet/NDArray](https://mxnet.apache.org) NDArray library in Apache MXNet.
+* [MinPy](https://github.com/dmlc/minpy) a NumPy interface above [Apache MXNet](https://mxnet.apache.org) backend.
+* [Gluon](https://gluon.mxnet.io/) library in Apache [MXNet](http://mxnet.io)
 * [CuPy](https://cupy.chainer.org/) an open-source matrix library accelerated with NVIDIA CUDA.
 
 

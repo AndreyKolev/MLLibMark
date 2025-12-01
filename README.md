@@ -7,7 +7,7 @@ Frameworks compared:
 * [Julia](https://julialang.org/) The Julia Programming Language
 * C++ called from Python using [pybind11](https://github.com/pybind/pybind11)
 * [Rust](https://rust-lang.org/), also using [Rayon: A data parallelism library for Rust](https://github.com/rayon-rs/rayon) and [ndarray](https://github.com/rust-ndarray/ndarray) crates
-* [TORCH](https://pytorch.org/)
+* [PyTorch](https://pytorch.org/)
 * [Tensorflow](https://www.tensorflow.org) v1 and v2 in CPU/GPU mode
 * [JAX](https://docs.jax.dev/en/latest/)
 * [Theano](http://deeplearning.net/software/theano)

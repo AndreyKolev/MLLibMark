@@ -15,7 +15,6 @@ Frameworks compared:
 * [PyTensor](https://github.com/pymc-devs/pytensor)
 * [Apache MXNet/NDArray](https://mxnet.apache.org) NDArray library in Apache MXNet.
 * [MinPy](https://github.com/dmlc/minpy) a NumPy interface above [Apache MXNet](https://mxnet.apache.org) backend.
-* [Gluon](https://gluon.mxnet.io/) library in Apache [MXNet](https://mxnet.apache.org)
 * [CuPy](https://cupy.chainer.org/) an open-source matrix library accelerated with NVIDIA CUDA.
 
 

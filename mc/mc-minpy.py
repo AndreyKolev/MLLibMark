@@ -1,5 +1,5 @@
-
-import minpy.numpy as np
+"""MC Barrier Option pricing benchmark, Python/minpy version."""
+import minpy.numpy as mp
 import math
 import minpy
 import json
@@ -13,19 +13,54 @@ parser.add_argument('-mode', metavar='mode', default='cpu',
 args = parser.parse_args()
 out = {}
 
-def pricepaths(S, tau, r, q, v, M, N):
-    dt = tau / M
-    g1 = (r - q - v / 2) * dt
-    g2 = math.sqrt(v * dt)
-    aux = math.log(S) + np.cumsum(g1 + g2 * np.random.randn(M, N, dtype=np.float32), 0)
-    return np.exp(aux)
+def pricepaths(s0:float, tau:float, r:float, q:float, v:float, m:int, n:int) -> minpy.numpy.ndarray:
+    """
+    Simulates log-price paths of a stock under geometric Brownian motion.
+
+    Args:
+        s0: Initial stock price.
+        tau: Time to maturity.
+        r: Risk-free interest rate.
+        q: Dividend yield.
+        v: Volatility.
+        m: Number of time steps.
+        n: Number of simulation paths.
+
+    Returns:
+        minpy.numpy.ndarray: Log-price paths of shape (m, n), where each column is a path.
+    """
+    dt = tau/m
+    drift = (r - q - v*v/2)*dt  # Drift term
+    scale = v*math.sqrt(dt)  # Volatility scaling for Brownian motion
+    aux = math.log(S) + mp.cumsum(drift + scale*mp.random.randn(M, N, dtype=mp.float32), 0)
+    return mp.exp(aux)
 
 
-def barrier(S0, K, B, tau, r, q, v, M, N):
-    S = pricepaths(S0, tau, r, q, v, M, N)
-    l = np.min(S, 0) > B
-    payoffs = l * np.maximum(S[-1, :] - K, 0)
-    return math.exp(-r*tau) * np.mean(payoffs)
+def barrier(s0:float, k:float, b:float, tau:float, r:float, q:float, v:float, m:int, n:int) -> float:
+    """
+    Estimates the price of a down-and-out barrier option using Monte Carlo simulation.
+
+    The option becomes worthless if the stock price hits the barrier level `b` during
+    the life of the option.
+
+    Args:
+        s0: Initial stock price.
+        k: Strike price.
+        b: Barrier level.
+        tau: Time to maturity (in years).
+        r: Risk-free interest rate.
+        q: Dividend yield.
+        v: Volatility.
+        m: Number of time steps.
+        n: Number of simulation paths.
+
+    Returns:
+        float: Estimated option price.
+    """
+    s = pricepaths(s0, tau, r, q, v, m, n)
+    l = mp.min(s, 0) > b
+    payoffs = l * mp.maximum(s[-1] - k, 0)
+    return math.exp(-r*tau)*mp.mean(payoffs)
 
 data = barrier_data()
 

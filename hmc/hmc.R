@@ -91,7 +91,7 @@ hmc <- function(U, dU, epsilon, L, current_q){
     p <- 0.5*epsilon*dU(q) - p
     # Compute Hamiltonian values at current and proposed states
     current_U <- U(current_q)
-    current_K <- 0.5*(sum(current_p^2))  # Kinetic energy
+    current_K <- 0.5*(sum(current_p^2))
     proposed_U <- U(q)
     proposed_K <- 0.5*(sum(p^2))
     # Metropolis acceptance

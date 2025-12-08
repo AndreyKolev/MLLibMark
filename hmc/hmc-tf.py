@@ -19,13 +19,13 @@ if args.mode == 'cpu':
 
 # Define negative log-posterior (potential energy)  
 @tf.function
-def u(y:tf.Tensor, x:tf.Tensor, beta:float, alpha:float):
+def u(y:tf.Tensor, x:tf.Tensor, beta:tf.Tensor, alpha:float):
     return tf.reduce_sum(tf.math.softplus(x@beta)) - tf.transpose(y)@(x@beta) + (0.5/alpha)*(tf.transpose(beta)@beta)
 
     
 # Define gradient of U (dU/dbeta)
 @tf.function
-def grad_u(y:tf.Tensor, x:tf.Tensor, beta:float, alpha:float):
+def grad_u(y:tf.Tensor, x:tf.Tensor, beta:tf.Tensor, alpha:float):
     return tf.transpose(x)@(tf.sigmoid(x@beta) - y) + beta/alpha
 
 

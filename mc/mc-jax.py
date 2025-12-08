@@ -54,7 +54,6 @@ def barrier(s0: float, k: float, b: float, tau: float, r: float, q: float, v: fl
         v: Volatility.
         m: Number of time steps.
         n: Number of simulation paths.
-        key: JAX random key for reproducibility.
 
     Returns:
         float: Estimated option price.

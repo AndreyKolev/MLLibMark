@@ -9,7 +9,6 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-mode', metavar='mode', default='cpu',
                     choices=['cpu', 'gpu'], help='use cpu/gpu')
 args = parser.parse_args()
-ctx = gpu() if args.mode=='gpu' else cpu() 
 out = {}
 
 def pricepaths(s:float, tau:float, r:float, q:float, v:float, m:int, n:int) -> nd.NDArray:

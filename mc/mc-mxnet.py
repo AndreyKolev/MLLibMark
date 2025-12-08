@@ -16,7 +16,7 @@ def pricepaths(s:float, tau:float, r:float, q:float, v:float, m:int, n:int) -> n
     Simulates log-price paths of a stock under geometric Brownian motion.
 
     Args:
-        : Initial stock price.
+        s: Initial stock price.
         tau: Time to maturity.
         r: Risk-free interest rate.
         q: Dividend yield.

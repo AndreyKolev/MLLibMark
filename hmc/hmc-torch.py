@@ -27,9 +27,7 @@ def u(y:torch.Tensor, x:torch.Tensor, beta:torch.Tensor, alpha:float):
 # Gradient of the energy function U with respect to beta
 @torch.compile
 def grad_u(y:torch.Tensor, x:torch.Tensor, beta:torch.Tensor, alpha:float):
-    x_beta = x@beta
-    grad = x.T@(torch.sigmoid(x_beta) - y) + beta/alpha
-    return grad
+    return x.T@(torch.sigmoid(x@beta) - y) + beta/alpha
 
 
 # HMC sampler (single step)
@@ -145,7 +143,7 @@ sigmoid = lambda x: 1.0/(1.0 + np.exp(-x))
 acc = np.mean((sigmoid(x_test@posterior_mean) > 0.5) == y_test.squeeze())
 
 # Validate accuracy
-assert acc > params['val_accuracy'], f"Accuracy too low: {acc}"
+assert acc > params['val_accuracy'], f"Accuracy too low: {accuracy}"
 
 # Output result
 out = {f'torch-{args.mode}': runtime}

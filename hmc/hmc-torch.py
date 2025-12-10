@@ -104,14 +104,14 @@ def hmc(
     Returns:
         Numpy array of posterior samples (shape: [n_iter, n_features]).
     """
-    samples = []
     current_q = torch.zeros((x.shape[1], 1), device=x.device)
+    samples = torch.zeros((n_iter, x.shape[1]), device=x.device)
 
-    for _ in range(n_iter):
+    for i in range(n_iter):
         current_q = hmc_step(y, x, epsilon, leapfrog_steps, current_q, alpha)
-        samples.append(current_q.clone())
+        samples[i] = current_q.clone().squeeze()
 
-    return torch.stack(samples, dim=0).squeeze()
+    return samples
 
 
 # Load hyper params
@@ -127,12 +127,12 @@ y_train = torch.tensor(y_train, dtype=torch.float32, device=device, requires_gra
 
 # Warm up
 with torch.no_grad():
-    hmc(y_train, x_train, params['epsilon'], params['n_leaps'], params['alpha'], 1, burn_in=0)
+    hmc(y_train, x_train, params['epsilon'], params['n_leaps'], params['alpha'], 1)
 
 # Run full HMC
 runtime = time.perf_counter()
 with torch.no_grad():
-    samples = hmc(y_train, x_train, params['epsilon'], params['n_leaps'], params['alpha'], params['n_iter'], burn_in=params['burn_in'])
+    samples = hmc(y_train, x_train, params['epsilon'], params['n_leaps'], params['alpha'], params['n_iter'])
 runtime = time.perf_counter() - runtime
 
 # Estimate posterior mean after burn-in
